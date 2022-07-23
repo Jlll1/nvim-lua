@@ -9,7 +9,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 end
 
 require('packer').startup(function(use)
-  use "wbthomason/packer.nvim"
+  use 'wbthomason/packer.nvim'
 
   -- [[ LSP & LANGUAGE SUPPORT ]]
   use "neovim/nvim-lspconfig"

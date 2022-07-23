@@ -2,13 +2,10 @@ local opt = vim.opt
 local cmd = vim.cmd
 local g = vim.g
 
-cmd([[
-syntax on
-set nobackup
-set noswapfile
-]])
-
 g.mapleader        = " "
+g.nobackup         = true
+g.noswapfile       = true
+opt.syntax         = 'on'
 opt.completeopt    = {'menu', 'menuone', 'noselect'}
 
 opt.termguicolors  = true
@@ -30,6 +27,7 @@ opt.hlsearch       = true
 opt.expandtab      = true
 opt.tabstop        = 2
 opt.shiftwidth     = 2
+
 
 
 -- [[ Indent-Blankline ]]
