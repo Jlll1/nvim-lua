@@ -46,6 +46,5 @@ lsp_installer.on_server_ready(function(server)
     capabilities = capabilities,
   }
 
-  -- And set up the server with our configuration!
   server:setup(opts)
 end)
