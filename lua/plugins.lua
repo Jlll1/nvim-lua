@@ -13,9 +13,13 @@ require('packer').startup(function(use)
 
   -- [[ LSP & LANGUAGE SUPPORT ]]
   use "neovim/nvim-lspconfig"
+  use 'williamboman/mason.nvim'
   use {
-    'williamboman/nvim-lsp-installer',
-    requires = 'neovim/nvim-lspconfig',
+    'williamboman/mason-lspconfig.nvim',
+    requires = {
+      'neovim/nvim-lspconfig',
+      'williamboman/mason.nvim',
+    }
   }
   use {
     "nvim-treesitter/nvim-treesitter",
