@@ -39,8 +39,10 @@ require('packer').startup(function(use)
     requires = {'neovim/nvim-lspconfig'}
   }
   use 'ionide/Ionide-vim' -- F# syntax highlighting
+  use 'nvim-treesitter/nvim-treesitter-context'
 
   -- [[ THEMES ]]
+  use 'koron/vim-monochromenote'
   use 'savq/melange'
 
   -- [[ OTHER ]]
@@ -49,6 +51,7 @@ require('packer').startup(function(use)
   use 'lukas-reineke/indent-blankline.nvim' -- Display indentation guides for all lines
   use 'numToStr/FTerm.nvim' -- Floating Terminal
   use 'ray-x/lsp_signature.nvim' -- Display function signature tooltip
+  use 'machakann/vim-sandwich' -- Wrap text objects
   use 'nvim-lualine/lualine.nvim' -- Custom status line
 end)
 
