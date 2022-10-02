@@ -9,12 +9,11 @@ opt.syntax         = 'on'
 opt.completeopt    = {'menu', 'menuone', 'noselect'}
 
 opt.termguicolors  = true
-opt.background     = "dark"
+opt.background     = "light"
 
 opt.number         = true
 opt.relativenumber = true
 opt.list           = true
-opt.signcolumn     = 'yes'
 
 opt.encoding       = 'utf8'
 opt.fileencoding   = 'utf8'
