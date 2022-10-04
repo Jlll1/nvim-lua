@@ -4,3 +4,6 @@
 [submodule "dot-nvim/nvim/site/pack/common/start/vim-monochromenote"]
 	path = dot-nvim/nvim/site/pack/common/start/vim-monochromenote
 	url = https://github.com/koron/vim-monochromenote
+[submodule "dot-nvim/nvim/site/pack/common/start/nvim-fzf"]
+	path = dot-nvim/nvim/site/pack/common/start/nvim-fzf
+	url = https://github.com/vijaymarupudi/nvim-fzf
