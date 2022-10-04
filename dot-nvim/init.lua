@@ -30,7 +30,5 @@ opt.shiftwidth     = 2
 local colorscheme = "monochromenote"
 pcall(vim.cmd, "colorscheme " .. colorscheme)
 
-vim.keymap.set('n', 'fp',  '<cmd>lua require("fzf-lua").files({ cmd = "fd" })<cr>', { noremap = true, silent = true })
-vim.keymap.set('n', 'fg',  '<cmd>lua require("fzf-lua").live_grep()<cr>',           { noremap = true, silent = true })
-vim.keymap.set('n', 'fiw', '<cmd>lua require("fzf-lua").grep_cword()<cr>',          { noremap = true, silent = true })
+vim.keymap.set('n', 'fp',  '<cmd>lua require("commands").files("fd --color always -t f -L")<cr>', { noremap = true, silent = true })
 

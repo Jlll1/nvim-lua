@@ -6,10 +6,10 @@ ENV TERM screen-256color
 RUN apk add --update \
   neovim \
 # d: fzf-lua {
-  git \
-  ripgrep \
+  bat \
   fd \
-  fzf
+  fzf \
+  ripgrep
 # }
 
 WORKDIR /root/.config/nvim
