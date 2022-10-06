@@ -14,6 +14,7 @@ opt.background     = "light"
 opt.number         = true
 opt.relativenumber = true
 opt.list           = true
+opt.cursorline     = true
 
 opt.encoding       = 'utf8'
 opt.fileencoding   = 'utf8'
