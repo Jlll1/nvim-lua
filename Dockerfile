@@ -5,7 +5,7 @@ ENV XDG_DATA_HOME /root/.config/nvim
 RUN apk add --update \
   neovim \
   neovim-doc \
-# d: fzf-lua {
+# d: nvim-fzf {
   bat \
   fd \
   fzf \

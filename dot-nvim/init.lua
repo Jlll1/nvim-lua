@@ -1,5 +1,7 @@
+local api = vim.api
 local opt = vim.opt
 local cmd = vim.cmd
+local keymap = vim.keymap
 local g = vim.g
 
 g.mapleader        = " "
@@ -28,8 +30,17 @@ opt.expandtab      = true
 opt.tabstop        = 2
 opt.shiftwidth     = 2
 
+
 local colorscheme = "monochromenote"
 pcall(vim.cmd, "colorscheme " .. colorscheme)
 
-vim.keymap.set('n', 'fp',  '<cmd>lua require("commands").files("fd --color always -t f -L")<cr>', { noremap = true, silent = true })
 
+keymap.set('n', 'fp',  '<cmd>lua require("commands").files("fd --color always -t f -L")<cr>', { noremap = true, silent = true })
+
+vim.api.nvim_create_user_command(
+  'Rg',
+  function (opts)
+    require('commands').grep(opts.args)
+  end,
+  { nargs = 1 })
+keymap.set('n', 'fg', ':<c-u>Rg<space>', { noremap = true })
