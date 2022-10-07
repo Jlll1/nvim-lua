@@ -33,6 +33,3 @@ pcall(vim.cmd, "colorscheme " .. colorscheme)
 
 vim.keymap.set('n', 'fp',  '<cmd>lua require("commands").files("fd --color always -t f -L")<cr>', { noremap = true, silent = true })
 
-vim.keymap.set('n', 'fp', '<cmd>lua require("fzf-lua").files()<cr>', { noremap = true, silent = true })
-vim.keymap.set('n', 'fg', '<cmd>lua require("fzf-lua").live_grep()<cr>', { noremap = true, silent = true })
-
