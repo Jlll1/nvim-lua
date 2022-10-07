@@ -6,7 +6,7 @@ RUN apk add --update \
   neovim \
   neovim-doc \
 # d: fzf-lua {
-  bat \
+  git \
   fd \
   fzf \
   ripgrep

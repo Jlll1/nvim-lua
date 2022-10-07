@@ -1,6 +1,6 @@
 [submodule "dot-nvim/nvim/site/pack/common/start/vim-monochromenote"]
 	path = dot-nvim/nvim/site/pack/common/start/vim-monochromenote
 	url = https://github.com/koron/vim-monochromenote
-[submodule "dot-nvim/nvim/site/pack/common/start/nvim-fzf"]
-	path = dot-nvim/nvim/site/pack/common/start/nvim-fzf
-	url = https://github.com/vijaymarupudi/nvim-fzf
+[submodule "dot-nvim/nvim/site/pack/common/start/fzf-lua"]
+	path = dot-nvim/nvim/site/pack/common/start/fzf-lua
+	url = https://github.com/ibhagwan/fzf-lua
