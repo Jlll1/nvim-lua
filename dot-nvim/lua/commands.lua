@@ -6,8 +6,7 @@ local action = require('fzf.actions').action
 local function files(command)
   coroutine.wrap(function ()
     local preview = 'ash -c ' .. vim.fn.shellescape('bat --color never -- \"$0\"') .. ' {}'
-    local choices = fzf(command,
-      ("--ansi --preview=%s --expect=ctrl-v,ctrl-h"):format(vim.fn.shellescape(preview)))
+    local choices = fzf(command, ("--ansi --preview=%s --expect=ctrl-v,ctrl-h"):format(vim.fn.shellescape(preview)))
     if not choices then return end
 
     local vimcmd
@@ -34,6 +33,7 @@ local function grep(pattern)
     local line_end = math.floor(row + (fzf_lines / 2)) - 1
 
     local cmd = "bat --style=numbers --color always " .. vim.fn.shellescape(filename) ..
+      " --theme 1337 " ..
       " --highlight-line " .. tostring(row) ..
       " --line-range " .. tostring(line_start) .. ":" .. tostring(line_end)
     return vim.fn.system(cmd)
@@ -59,6 +59,25 @@ local function grep(pattern)
   end)()
 end
 
+local function grep_operator()
+  local existing_func = vim.go.operatorfunc
+  _G.op_grep = function ()
+    local m_start = vim.api.nvim_buf_get_mark(0, '[')
+    local m_end = vim.api.nvim_buf_get_mark(0, ']')
+    local pattern = vim.api.nvim_buf_get_text(0, m_start[1] - 1, m_start[2], m_end[1] - 1, m_end[2] + 1, {})
+
+    -- we don't do multiline rg, get only first line
+    grep(pattern[1])
+
+    vim.go.operatorfunc = existing_func
+    _G.op_grep = nil
+  end
+
+  vim.go.operatorfunc = 'v:lua.op_grep'
+  vim.api.nvim_feedkeys('g@', 'n', false)
+end
+
 M.files = files
 M.grep = grep
+M.grep_operator = grep_operator
 return M
