@@ -25,3 +25,6 @@
 [submodule "dot-nvim/treesitter-parsers/tree-sitter-lua"]
 	path = dot-nvim/treesitter-parsers/tree-sitter-lua
 	url = https://github.com/MunifTanjim/tree-sitter-lua
+[submodule "dot-nvim/nvim/site/pack/common/start/editorconfig-vim"]
+	path = dot-nvim/nvim/site/pack/common/start/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim
