@@ -49,6 +49,7 @@ require('nvim-treesitter.configs').setup({
   sync_install = true,
   auto_install = false,
   highlight = { enable = true },
+  payground = { enable = true },
 })
 
 -- [[ Keymaps ]]
@@ -63,3 +64,4 @@ vim.api.nvim_create_user_command(
 keymap.set('n', 'fg', ':<c-u>Rg<space>', { noremap = true })
 
 keymap.set('n', 'fi', '<cmd>lua require("commands").grep_operator()<cr>', { noremap = true })
+keymap.set('n', 'ggg', '<cmd>lua require("commands").go_to_declaration()<cr>', { noremap = true })

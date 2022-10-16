@@ -28,3 +28,9 @@
 [submodule "dot-nvim/nvim/site/pack/common/start/editorconfig-vim"]
 	path = dot-nvim/nvim/site/pack/common/start/editorconfig-vim
 	url = https://github.com/editorconfig/editorconfig-vim
+[submodule "dot-nvim/nvim/site/pack/common/start/playground"]
+	path = dot-nvim/nvim/site/pack/common/start/playground
+	url = https://github.com/nvim-treesitter/playground
+[submodule "dot-nvim/nvim/site/pack/common/start/copilot.vim"]
+	path = dot-nvim/nvim/site/pack/common/start/copilot.vim
+	url = https://github.com/github/copilot.vim

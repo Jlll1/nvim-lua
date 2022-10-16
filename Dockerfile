@@ -25,6 +25,11 @@ RUN apk add \
   llvm-dev
 # }
 
+# d: copilot {
+RUN apk add \
+  nodejs
+# }
+
 WORKDIR /root/.config/nvim
 COPY dot-nvim .
 
