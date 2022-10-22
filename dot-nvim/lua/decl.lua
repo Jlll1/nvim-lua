@@ -17,7 +17,6 @@ local preview_action = require('fzf.actions').action(function (lines, fzf_lines)
 end)
 
 -- @TODO this should handle types as well
--- @NEXT implement smart goto based on selected_node interpretation (method call, field access etc.) for C#
 local function go_to_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
   local cursor = vim.api.nvim_win_get_cursor(0)
@@ -28,12 +27,17 @@ local function go_to_declaration()
   local selected_node_text = vim.treesitter.query.get_node_text(selected_node, bufnr)
 
   local query_string
-  if selected_node:parent():type() == "member_access_expression" then
+  local parent_type = selected_node:parent():type()
+  if parent_type == "member_access_expression" then
     if selected_node:parent():parent():type() == "invocation_expression" then
       query_string = "(method_declaration (identifier) @target)"
     else
       query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
     end
+  elseif parent_type == 'property_declaration' then
+    local type_node = selected_node:parent():field('type')[1]
+    if type_node ~= selected_node then return end
+    query_string = "(class_declaration (identifier) @target)"
   else
     return
   end
