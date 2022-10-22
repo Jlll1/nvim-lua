@@ -1,4 +1,24 @@
-FROM alpine:latest
+FROM alpine:latest AS build-tree-sitter
+
+# d: treesitter {
+RUN apk add \
+  git \
+  clang \
+  clang-static \
+  clang-dev \
+  build-base \
+  llvm-static \
+  llvm-dev \
+  tree-sitter-dev
+# }
+
+WORKDIR /root/.config/treesitter
+COPY dot-treesitter .
+RUN mkdir parser
+RUN gcc -shared -o parser/c_sharp.so -fPIC tree-sitter-c-sharp/src/parser.c tree-sitter-c-sharp/src/scanner.c
+
+# =============================
+FROM alpine:latest AS nvimd
 
 ENV XDG_DATA_HOME /root/.config/nvim
 
@@ -14,26 +34,15 @@ RUN apk add \
   ripgrep
 # }
 
-# d: treesitter {
-RUN apk add \
-  git \
-  clang \
-  clang-static \
-  clang-dev \
-  build-base \
-  llvm-static \
-  llvm-dev
-# }
-
 # d: copilot {
 RUN apk add \
   nodejs
 # }
 
 WORKDIR /root/.config/nvim
-COPY dot-nvim .
-
-RUN nvim --headless +TSUpdate +qa!
+COPY dot-nvim ./
+WORKDIR /root/.config/nvim/nvim/site/parser
+COPY --from=build-tree-sitter /root/.config/treesitter/parser/* .
 
 VOLUME /ws
 WORKDIR /ws

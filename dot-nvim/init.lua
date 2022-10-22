@@ -35,19 +35,7 @@ local colorscheme = 'monochromenote'
 pcall(vim.cmd, 'colorscheme ' .. colorscheme)
 
 -- [[ Treesitter ]]
--- Don't pull parsers from github, instead use local submodules
-  local pcfg = require('nvim-treesitter.parsers').get_parser_configs()
-  pcfg.c.install_info.url           = '/root/.config/nvim/treesitter-parsers/tree-sitter-c'
-  pcfg.cpp.install_info.url         = '/root/.config/nvim/treesitter-parsers/tree-sitter-cpp'
-  pcfg.c_sharp.install_info.url     = '/root/.config/nvim/treesitter-parsers/tree-sitter-c-sharp'
-  pcfg.go.install_info.url          = '/root/.config/nvim/treesitter-parsers/tree-sitter-go'
-  pcfg.html.install_info.url        = '/root/.config/nvim/treesitter-parsers/tree-sitter-html'
-  pcfg.lua.install_info.url         = '/root/.config/nvim/treesitter-parsers/tree-sitter-lua'
-
 require('nvim-treesitter.configs').setup({
-  ensure_installed = { 'c', 'cpp', 'c_sharp', 'go', 'html', 'lua' },
-  sync_install = true,
-  auto_install = false,
   payground = { enable = true },
 })
 

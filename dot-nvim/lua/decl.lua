@@ -19,10 +19,13 @@ end)
 -- @TODO this should handle types as well
 -- @NEXT implement smart goto based on selected_node interpretation (method call, field access etc.) for C#
 local function go_to_declaration()
-  local ts_utils = require('nvim-treesitter.ts_utils')
-  -- @IMPROVEMENT Reimplement get_node_at_cursor to remove treesiter-nvim dependency
-  local selected_node = ts_utils.get_node_at_cursor()
-  local selected_node_text = vim.treesitter.query.get_node_text(selected_node, vim.api.nvim_get_current_buf())
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row = cursor[1] - 1
+  local col = cursor[2]
+  local curr_parser = vim.treesitter.get_parser(bufnr, 'c_sharp')
+  local selected_node = curr_parser:named_node_for_range({ row, col, row, col })
+  local selected_node_text = vim.treesitter.query.get_node_text(selected_node, bufnr)
 
   local query_string
   if selected_node:parent():type() == "member_access_expression" then
