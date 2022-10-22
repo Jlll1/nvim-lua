@@ -16,7 +16,6 @@ local preview_action = require('fzf.actions').action(function (lines, fzf_lines)
   return vim.fn.system(cmd)
 end)
 
--- @TODO this should handle types as well
 local function go_to_declaration()
   local bufnr = vim.api.nvim_get_current_buf()
   local cursor = vim.api.nvim_win_get_cursor(0)
@@ -35,9 +34,10 @@ local function go_to_declaration()
       query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
     end
   elseif parent_type == 'property_declaration' then
+    -- @INCOMPLETE include classes implementing the interface
     local type_node = selected_node:parent():field('type')[1]
     if type_node ~= selected_node then return end
-    query_string = "(class_declaration (identifier) @target)"
+    query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target)])"
   else
     return
   end
@@ -77,6 +77,7 @@ local function go_to_declaration()
       local matches = query:iter_captures(root, file_content, 0, -1)
       for id, node, metadata in matches do
         local node_text = vim.treesitter.query.get_node_text(node, file_content)
+        -- @IMPROVEMENT can matching be done with a query?
         if node_text == selected_node_text then
           local row, col, _ = node:start()
           results[#results + 1] = { filename = filename, row = row + 1, col = col }
