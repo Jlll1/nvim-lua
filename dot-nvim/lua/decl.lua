@@ -1,25 +1,44 @@
+local fzf = require('fzf').fzf
+
+-- @CLEANUP copy-pasted from commands.lua
+local preview_action = require('fzf.actions').action(function (lines, fzf_lines)
+  local filename, row = string.match(lines[1], '(.-):(%d+):.*')
+
+  fzf_lines = tonumber(fzf_lines)
+  local line_start = math.floor(row - (fzf_lines / 2))
+  if line_start < 1 then line_start = 1 end
+  local line_end = math.floor(row + (fzf_lines / 2)) - 1
+
+  local cmd = "bat --style=numbers --color always " .. vim.fn.shellescape(filename) ..
+    " --theme 1337 " ..
+    " --highlight-line " .. tostring(row) ..
+    " --line-range " .. tostring(line_start) .. ":" .. tostring(line_end)
+  return vim.fn.system(cmd)
+end)
+
 -- @TODO this should handle types as well
 -- @NEXT implement smart goto based on selected_node interpretation (method call, field access etc.) for C#
 local function go_to_declaration()
-  -- @INCOMPLETE This isn't exactly right, since we're not verifying whether the cursor is on the
-  -- indexed indentifier or on the method identifier
+  local ts_utils = require('nvim-treesitter.ts_utils')
   -- @IMPROVEMENT Reimplement get_node_at_cursor to remove treesiter-nvim dependency
   local selected_node = ts_utils.get_node_at_cursor()
   local selected_node_text = vim.treesitter.query.get_node_text(selected_node, vim.api.nvim_get_current_buf())
 
-  -- @TODO is there a better way to do this?
-  -- @INCOMPLETE @MORE_LANGS
+  local query_string
+  if selected_node:parent():type() == "member_access_expression" then
+    if selected_node:parent():parent():type() == "invocation_expression" then
+      query_string = "(method_declaration (identifier) @target)"
+    else
+      query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
+    end
+  else
+    return
+  end
+
   -- Convert file_extension to treesitter language
   local language = vim.bo.filetype
   if language == 'cs' then
     language = 'c_sharp'
-  end
-
-  -- Some languages don't have method declarations
-  -- @INCOMPLETE @MORE_LANGS
-  local query_string = '([(function_declaration (identifier) @target) (method_declaration (field_identifier) @target)])'
-  if language == 'lua' then
-    query_string = '(function_declaration (identifier) @target)'
   end
 
   local rgcmd = "rg --vimgrep --no-heading " .. vim.fn.shellescape(selected_node_text)
@@ -84,3 +103,7 @@ local function go_to_declaration()
     end)()
   end
 end
+
+return {
+  go_to_declaration = go_to_declaration
+}
