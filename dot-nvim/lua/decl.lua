@@ -13,10 +13,15 @@ filetype_to_languagehandler['cs'] = {
       local query_string
       local parent_type = selected_node:parent():type()
       if parent_type == "member_access_expression" then
-        if selected_node:parent():parent():type() == "invocation_expression" then
-          query_string = "(method_declaration (identifier) @target)"
+        local member_name_node = selected_node:parent():field('expression')[1]
+        if member_name_node == selected_node then
+            query_string = '([(variable_declaration (variable_declarator (identifier) @target)) (class_declaration (identifier) @target) (property_declaration (identifier) @target)])'
         else
-          query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
+          if selected_node:parent():parent():type() == "invocation_expression" then
+            query_string = "(method_declaration (identifier) @target)"
+          else
+            query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
+          end
         end
       elseif parent_type == 'property_declaration' then
         local type_node = selected_node:parent():field('type')[1]
@@ -28,6 +33,7 @@ filetype_to_languagehandler['cs'] = {
         query_string = "(class_declaration (identifier) @target)"
       elseif parent_type == 'variable_declaration' then
         query_string = "(class_declaration (identifier) @target)"
+      elseif parent_type == 'member_access_expression' then
       end
       return query_string
     end,
@@ -37,6 +43,14 @@ filetype_to_languagehandler['lua'] = {
   language = 'lua',
   get_query = function (selected_node)
       local query_string
+      local parent_type = selected_node:parent():type()
+      local parent_parent_type = selected_node:parent():parent():type()
+      if parent_type == 'dot_index_expression' and parent_parent_type == 'function_call' then
+        query_string = '(function_declaration (identifier) @target)'
+      elseif parent_type == 'function_call' then
+        query_string = '(function_declaration (identifier) @target)'
+      end
+
       return query_string
     end,
 }
