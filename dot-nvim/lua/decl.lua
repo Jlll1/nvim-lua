@@ -1,22 +1,4 @@
-local fzf = require('fzf').fzf
-
--- @CLEANUP copy-pasted from commands.lua
-local preview_action = require('fzf.actions').action(function (lines, fzf_lines)
-  local filename, row = string.match(lines[1], '(.-):(%d+):.*')
-
-  fzf_lines = tonumber(fzf_lines)
-  local line_start = math.floor(row - (fzf_lines / 2))
-  if line_start < 1 then line_start = 1 end
-  local line_end = math.floor(row + (fzf_lines / 2)) - 1
-
-  local cmd = "bat --style=numbers --color always " .. vim.fn.shellescape(filename) ..
-    " --theme 1337 " ..
-    " --highlight-line " .. tostring(row) ..
-    " --line-range " .. tostring(line_start) .. ":" .. tostring(line_end)
-  return vim.fn.system(cmd)
-end)
-
-local function go_to_declaration()
+local function go_to()
   local bufnr = vim.api.nvim_get_current_buf()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local row = cursor[1] - 1
@@ -26,6 +8,7 @@ local function go_to_declaration()
   local selected_node_text = vim.treesitter.query.get_node_text(selected_node, bufnr)
 
   -- @INCOMPLETE structs
+  -- @INCOMPLETE generics
   local query_string
   local parent_type = selected_node:parent():type()
   if parent_type == "member_access_expression" then
@@ -94,30 +77,9 @@ local function go_to_declaration()
     ::continue::
   end
 
-  if #results == 1 then
-    vim.cmd("e " .. vim.fn.fnameescape(results[1].filename))
-    vim.api.nvim_win_set_cursor(0, { tonumber(results[1].row), tonumber(results[1].col) })
-  elseif #results > 1 then
-    coroutine.wrap(function ()
-      local str_results = {}
-      for _, result in ipairs(results) do
-        str_results[#str_results + 1] = result.filename .. ":" .. result.row .. ":" .. result.col
-      end
-      local choices = fzf(str_results, "--ansi --expect=ctrl-v,ctrl-h " .. "--preview " .. preview_action)
-      if not choices then return end
-
-      local vimcmd
-      if choices[1] == "ctrl-v" then
-        vimcmd = "vnew"
-      elseif choices[1] == "ctrl-h" then
-        vimcmd = "new"
-      else
-        vimcmd = "e"
-      end
-    end)()
-  end
+  return results
 end
 
 return {
-  go_to_declaration = go_to_declaration
+  go_to = go_to
 }

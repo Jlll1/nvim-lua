@@ -51,4 +51,4 @@ vim.api.nvim_create_user_command(
 keymap.set('n', 'fg', ':<c-u>Rg<space>', { noremap = true })
 
 keymap.set('n', 'fi', '<cmd>lua require("commands").grep_operator()<cr>', { noremap = true })
-keymap.set('n', 'ggg', '<cmd>lua require("decl").go_to_declaration()<cr>', { noremap = true })
+keymap.set('n', 'ggg', '<cmd>lua require("commands").go_to()<cr>', { noremap = true })
