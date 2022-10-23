@@ -1,4 +1,11 @@
-local c_sharp = {
+-- Currently we take any node that could represent some node (e. g. identifiers) and search for any node that matches expected type and the identifier
+-- Possibly could be expanded with scope awareness to a certain degree (especially useful in the case of variables)
+-- The first degree of scope awareness would be file scope, differentiating between global nodes and nodes in the currently opened buffer
+
+local M = {}
+local filetype_to_languagehandler = { }
+
+filetype_to_languagehandler['cs'] = {
   language = 'c_sharp',
   get_query = function (selected_node)
       -- @INCOMPLETE structs
@@ -26,11 +33,22 @@ local c_sharp = {
     end,
 }
 
-local filetype_to_languagehandler = { }
-filetype_to_languagehandler['cs'] = c_sharp
+filetype_to_languagehandler['lua'] = {
+  language = 'lua',
+  get_query = function (selected_node)
+      local query_string
+      return query_string
+    end,
+}
 
-local function go_to()
+-- @IMPROVEMENT consider renaming, it doesn't go anywhere - it finds. Maybe find_implementations?
+function M.go_to()
+  local results = {}
+
   lang_handler = filetype_to_languagehandler[vim.bo.filetype]
+  -- @INCOMPLETE provide error message
+  if not lang_handler then return end
+
   local language = lang_handler.language
 
   local bufnr = vim.api.nvim_get_current_buf()
@@ -42,7 +60,7 @@ local function go_to()
   local selected_node_text = vim.treesitter.query.get_node_text(selected_node, bufnr)
 
   local query_string = lang_handler.get_query(selected_node)
-  if not query_string then return end
+  if not query_string then return results end
 
   local rgcmd = "rg --vimgrep --no-heading " .. vim.fn.shellescape(selected_node_text)
 
@@ -53,7 +71,6 @@ local function go_to()
     filenames[filename] = true
   end
 
-  local results = {}
   for filename, _ in pairs(filenames) do
     -- The declaration must be in a language that matches the current one.
     local file_extension = string.match(filename, '.*%.(.*)')
@@ -87,6 +104,4 @@ local function go_to()
   return results
 end
 
-return {
-  go_to = go_to
-}
+return M

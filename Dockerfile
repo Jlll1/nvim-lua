@@ -16,6 +16,8 @@ WORKDIR /root/.config/treesitter
 COPY dot-treesitter .
 RUN mkdir parser
 RUN gcc -shared -o parser/c_sharp.so -fPIC tree-sitter-c-sharp/src/parser.c tree-sitter-c-sharp/src/scanner.c
+RUN gcc -shared -o parser/c.so -fPIC tree-sitter-c/src/parser.c
+RUN gcc -shared -o parser/lua.so -fPIC tree-sitter-lua/src/parser.c tree-sitter-lua/src/scanner.c
 
 # =============================
 FROM alpine:latest AS nvimd
@@ -42,7 +44,7 @@ RUN apk add \
 WORKDIR /root/.config/nvim
 COPY dot-nvim ./
 WORKDIR /root/.config/nvim/nvim/site/parser
-COPY --from=build-tree-sitter /root/.config/treesitter/parser/* .
+COPY --from=build-tree-sitter /root/.config/treesitter/parser/* ./
 
 VOLUME /ws
 WORKDIR /ws

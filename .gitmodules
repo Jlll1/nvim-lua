@@ -19,3 +19,9 @@
 [submodule "dot-treesitter/tree-sitter-c-sharp"]
 	path = dot-treesitter/tree-sitter-c-sharp
 	url = https://github.com/tree-sitter/tree-sitter-c-sharp
+[submodule "dot-treesitter/tree-sitter-c"]
+	path = dot-treesitter/tree-sitter-c
+	url = https://github.com/tree-sitter/tree-sitter-c
+[submodule "dot-treesitter/tree-sitter-lua"]
+	path = dot-treesitter/tree-sitter-lua
+	url = https://github.com/tjdevries/tree-sitter-lua
