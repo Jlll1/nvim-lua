@@ -1,21 +1,3 @@
-[submodule "dot-nvim/nvim/site/pack/common/start/vim-monochromenote"]
-	path = dot-nvim/nvim/site/pack/common/start/vim-monochromenote
-	url = https://github.com/koron/vim-monochromenote
-[submodule "dot-nvim/nvim/site/pack/common/start/nvim-fzf"]
-	path = dot-nvim/nvim/site/pack/common/start/nvim-fzf
-	url = https://github.com/vijaymarupudi/nvim-fzf
-[submodule "dot-nvim/nvim/site/pack/common/start/nvim-treesitter"]
-	path = dot-nvim/nvim/site/pack/common/start/nvim-treesitter
-	url = https://github.com/nvim-treesitter/nvim-treesitter
-[submodule "dot-nvim/nvim/site/pack/common/start/editorconfig-vim"]
-	path = dot-nvim/nvim/site/pack/common/start/editorconfig-vim
-	url = https://github.com/editorconfig/editorconfig-vim
-[submodule "dot-nvim/nvim/site/pack/common/start/playground"]
-	path = dot-nvim/nvim/site/pack/common/start/playground
-	url = https://github.com/nvim-treesitter/playground
-[submodule "dot-nvim/nvim/site/pack/common/start/copilot.vim"]
-	path = dot-nvim/nvim/site/pack/common/start/copilot.vim
-	url = https://github.com/github/copilot.vim
 [submodule "dot-treesitter/tree-sitter-c-sharp"]
 	path = dot-treesitter/tree-sitter-c-sharp
 	url = https://github.com/tree-sitter/tree-sitter-c-sharp
@@ -25,3 +7,21 @@
 [submodule "dot-treesitter/tree-sitter-lua"]
 	path = dot-treesitter/tree-sitter-lua
 	url = https://github.com/MunifTanjim/tree-sitter-lua
+[submodule "plugins/vim-monochromenote"]
+	path = plugins/vim-monochromenote
+	url = https://github.com/koron/vim-monochromenote
+[submodule "plugins/nvim-fzf"]
+	path = plugins/nvim-fzf
+	url = https://github.com/vijaymarupudi/nvim-fzf
+[submodule "plugins/nvim-treesitter"]
+	path = plugins/nvim-treesitter
+	url = https://github.com/nvim-treesitter/nvim-treesitter
+[submodule "plugins/editorconfig-vim"]
+	path = plugins/editorconfig-vim
+	url = https://github.com/editorconfig/editorconfig-vim
+[submodule "plugins/playground"]
+	path = plugins/playground
+	url = https://github.com/nvim-treesitter/playground
+[submodule "plugins/copilot.vim"]
+	path = plugins/copilot.vim
+	url = https://github.com/github/copilot.vim

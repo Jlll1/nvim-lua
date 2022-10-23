@@ -34,11 +34,6 @@ opt.shiftwidth     = 2
 local colorscheme = 'monochromenote'
 pcall(vim.cmd, 'colorscheme ' .. colorscheme)
 
--- [[ Treesitter ]]
-require('nvim-treesitter.configs').setup({
-  payground = { enable = true },
-})
-
 -- [[ Keymaps ]]
 keymap.set('n', 'fp',  '<cmd>lua require("commands").files("fd --color always -t f -L")<cr>', { noremap = true, silent = true })
 
