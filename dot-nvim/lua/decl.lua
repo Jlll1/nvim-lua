@@ -8,32 +8,47 @@ local filetype_to_languagehandler = { }
 filetype_to_languagehandler['cs'] = {
   language = 'c_sharp',
   get_query = function (selected_node)
-      -- @INCOMPLETE structs
-      -- @INCOMPLETE generics
       local query_string
       local parent_type = selected_node:parent():type()
-      if parent_type == "member_access_expression" then
-        local member_name_node = selected_node:parent():field('expression')[1]
-        if member_name_node == selected_node then
-            query_string = '([(variable_declaration (variable_declarator (identifier) @target)) (class_declaration (identifier) @target) (property_declaration (identifier) @target)])'
+      local type_node = selected_node:parent():field('type')[1]
+      if type_node == selected_node or parent_type == 'base_list' or parent_type == 'generic_name' then
+        query_string = [[([
+          (class_declaration (identifier) @target)
+          (interface_declaration (identifier) @target)
+          (struct_declaration (identifier) @target)
+          (enum_declaration (identifier) @target)
+          (record_declaration (identifier) @target)
+          (record_struct_declaration (identifier) @target)
+          (class_declaration (base_list (identifier) @target))
+          (interface_declaration (base_list (identifier) @target))
+          (struct_declaration (base_list (identifier) @target))
+        ])]]
+      elseif parent_type == "member_access_expression" then
+        local name_node = selected_node:parent():field('name')[1]
+        if name_node == selected_node then
+          query_string = [[([
+            (property_declaration (identifier) @target)
+            (field_declaration (variable_declaration (variable_declarator (identifier) @target)))
+            (method_declaration (identifier) @target)
+            (enum_member_declaration (identifier) @target)
+            (record_declaration (parameter_list (parameter name: (identifier) @target)))
+          ])]]
         else
-          if selected_node:parent():parent():type() == "invocation_expression" then
-            query_string = "(method_declaration (identifier) @target)"
-          else
-            query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
-          end
+          query_string = [[([
+            (property_declaration (identifier) @target)
+            (variable_declaration (variable_declarator (identifier) @target))
+            (class_declaration (identifier) @target)
+            (enum_declaration (identifier) @target)
+          ])]]
         end
-      elseif parent_type == 'property_declaration' then
-        local type_node = selected_node:parent():field('type')[1]
-        if type_node ~= selected_node then return end
-        query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target) (class_declaration (base_list (identifier) @target))])"
-      elseif parent_type == 'base_list' then
-        query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target)])"
-      elseif parent_type == 'object_creation_expression' then
-        query_string = "(class_declaration (identifier) @target)"
-      elseif parent_type == 'variable_declaration' then
-        query_string = "(class_declaration (identifier) @target)"
-      elseif parent_type == 'member_access_expression' then
+      elseif selected_node:type() == 'identifier' then
+        query_string = [[([
+          (property_declaration (identifier) @target)
+          (variable_declaration (variable_declarator (identifier) @target))
+          (method_declaration (identifier) @target)
+          (parameter_list (parameter name: (identifier) @target))
+          (local_function_statement name: (identifier) @target)
+        ])]]
       end
       return query_string
     end,

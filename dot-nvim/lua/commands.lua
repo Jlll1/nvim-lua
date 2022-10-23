@@ -103,6 +103,8 @@ local function go_to()
       else
         vimcmd = "e"
       end
+      vim.cmd(vimcmd .. vim.fn.fnameescape(results[1].filename))
+      vim.api.nvim_win_set_cursor(0, { tonumber(results[1].row), tonumber(results[1].col) })
     end)()
   end
 end
