@@ -1,41 +1,48 @@
+local c_sharp = {
+  language = 'c_sharp',
+  get_query = function (selected_node)
+      -- @INCOMPLETE structs
+      -- @INCOMPLETE generics
+      local query_string
+      local parent_type = selected_node:parent():type()
+      if parent_type == "member_access_expression" then
+        if selected_node:parent():parent():type() == "invocation_expression" then
+          query_string = "(method_declaration (identifier) @target)"
+        else
+          query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
+        end
+      elseif parent_type == 'property_declaration' then
+        local type_node = selected_node:parent():field('type')[1]
+        if type_node ~= selected_node then return end
+        query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target) (class_declaration (base_list (identifier) @target))])"
+      elseif parent_type == 'base_list' then
+        query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target)])"
+      elseif parent_type == 'object_creation_expression' then
+        query_string = "(class_declaration (identifier) @target)"
+      elseif parent_type == 'variable_declaration' then
+        query_string = "(class_declaration (identifier) @target)"
+      end
+      return query_string
+    end,
+}
+
+local filetype_to_languagehandler = { }
+filetype_to_languagehandler['cs'] = c_sharp
+
 local function go_to()
+  lang_handler = filetype_to_languagehandler[vim.bo.filetype]
+  local language = lang_handler.language
+
   local bufnr = vim.api.nvim_get_current_buf()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local row = cursor[1] - 1
   local col = cursor[2]
-  local curr_parser = vim.treesitter.get_parser(bufnr, 'c_sharp')
+  local curr_parser = vim.treesitter.get_parser(bufnr, language)
   local selected_node = curr_parser:named_node_for_range({ row, col, row, col })
   local selected_node_text = vim.treesitter.query.get_node_text(selected_node, bufnr)
 
-  -- @INCOMPLETE structs
-  -- @INCOMPLETE generics
-  local query_string
-  local parent_type = selected_node:parent():type()
-  if parent_type == "member_access_expression" then
-    if selected_node:parent():parent():type() == "invocation_expression" then
-      query_string = "(method_declaration (identifier) @target)"
-    else
-      query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
-    end
-  elseif parent_type == 'property_declaration' then
-    local type_node = selected_node:parent():field('type')[1]
-    if type_node ~= selected_node then return end
-    query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target) (class_declaration (base_list (identifier) @target))])"
-  elseif parent_type == 'base_list' then
-    query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target)])"
-  elseif parent_type == 'object_creation_expression' then
-    query_string = "(class_declaration (identifier) @target)"
-  elseif parent_type == 'variable_declaration' then
-    query_string = "(class_declaration (identifier) @target)"
-  else
-    return
-  end
-
-  -- Convert file_extension to treesitter language
-  local language = vim.bo.filetype
-  if language == 'cs' then
-    language = 'c_sharp'
-  end
+  local query_string = lang_handler.get_query(selected_node)
+  if not query_string then return end
 
   local rgcmd = "rg --vimgrep --no-heading " .. vim.fn.shellescape(selected_node_text)
 
