@@ -25,6 +25,7 @@ local function go_to_declaration()
   local selected_node = curr_parser:named_node_for_range({ row, col, row, col })
   local selected_node_text = vim.treesitter.query.get_node_text(selected_node, bufnr)
 
+  -- @INCOMPLETE structs
   local query_string
   local parent_type = selected_node:parent():type()
   if parent_type == "member_access_expression" then
@@ -34,10 +35,15 @@ local function go_to_declaration()
       query_string = "([(property_declaration (identifier) @target) (field_declaration (variable_declaration (variable_declarator (identifier) @target)))])"
     end
   elseif parent_type == 'property_declaration' then
-    -- @INCOMPLETE include classes implementing the interface
     local type_node = selected_node:parent():field('type')[1]
     if type_node ~= selected_node then return end
+    query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target) (class_declaration (base_list (identifier) @target))])"
+  elseif parent_type == 'base_list' then
     query_string = "([(class_declaration (identifier) @target) (interface_declaration (identifier) @target)])"
+  elseif parent_type == 'object_creation_expression' then
+    query_string = "(class_declaration (identifier) @target)"
+  elseif parent_type == 'variable_declaration' then
+    query_string = "(class_declaration (identifier) @target)"
   else
     return
   end
