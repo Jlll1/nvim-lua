@@ -2,11 +2,19 @@
 -- Possibly could be expanded with scope awareness to a certain degree (especially useful in the case of variables)
 -- The first degree of scope awareness would be file scope, differentiating between global nodes and nodes in the currently opened buffer
 
+-- @NEXT handle type scopes
+
 local M = {}
 local filetype_to_languagehandler = { }
 
 filetype_to_languagehandler['cs'] = {
   language = 'c_sharp',
+  -- Scopes provide for a node (use) and a node is covered by scopes (declaration)
+  -- @INCOMPLETE handle nested qualified names - Foo.Bar etc.
+  providing_scopes_query = '(using_directive (identifier) @target)',
+  -- @INCOMPLETE support other scopes
+  -- @INCOMPLETE handle classic namespaces with brackets
+  covering_scope_query = '(file_scoped_namespace_declaration (identifier) @target)',
   get_query = function (selected_node)
       local query_string
       local parent_type = selected_node:parent():type()
@@ -71,6 +79,7 @@ filetype_to_languagehandler['lua'] = {
 }
 
 -- @IMPROVEMENT consider renaming, it doesn't go anywhere - it finds. Maybe find_implementations?
+-- @CLEANUP start separating this into blocks
 function M.go_to()
   local results = {}
 
@@ -90,6 +99,14 @@ function M.go_to()
 
   local query_string = lang_handler.get_query(selected_node)
   if not query_string then return results end
+
+  local curr_root = curr_parser:tree_for_range({ row, col, row, col }):root()
+  local providing_scopes = {}
+  local query = vim.treesitter.parse_query(language, lang_handler.providing_scopes_query)
+  local matches = query:iter_captures(curr_root, bufnr, 0, -1)
+  for id, node, metadata in matches do
+    providing_scopes[vim.treesitter.query.get_node_text(node, bufnr)] = true
+  end
 
   local rgcmd = "rg --vimgrep --no-heading " .. vim.fn.shellescape(selected_node_text)
 
@@ -115,14 +132,20 @@ function M.go_to()
     parser:for_each_tree(function (tstree, tree)
       local root = tstree:root()
 
-      local query = vim.treesitter.parse_query(language, query_string)
-      local matches = query:iter_captures(root, file_content, 0, -1)
-      for id, node, metadata in matches do
-        local node_text = vim.treesitter.query.get_node_text(node, file_content)
-        -- @IMPROVEMENT can matching be done with a query?
-        if node_text == selected_node_text then
-          local row, col, _ = node:start()
-          results[#results + 1] = { filename = filename, row = row + 1, col = col }
+      local covering_scope_query = vim.treesitter.parse_query(language, lang_handler.covering_scope_query)
+      local _, node, _ = covering_scope_query:iter_captures(root, file_content, 0, -1)()
+      local covering_scope = vim.treesitter.query.get_node_text(node, file_content)
+
+      if providing_scopes[covering_scope] then
+        local query = vim.treesitter.parse_query(language, query_string)
+        local matches = query:iter_captures(root, file_content, 0, -1)
+        for id, node, metadata in matches do
+          local node_text = vim.treesitter.query.get_node_text(node, file_content)
+          -- @IMPROVEMENT can matching be done with a query?
+          if node_text == selected_node_text then
+            local row, col, _ = node:start()
+            results[#results + 1] = { filename = filename, row = row + 1, col = col }
+          end
         end
       end
     end)
