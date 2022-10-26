@@ -11,7 +11,7 @@ filetype_to_languagehandler['cs'] = {
   language = 'c_sharp',
   -- Scopes provide for a node (use) and a node is covered by scopes (declaration)
   -- @INCOMPLETE handle nested qualified names - Foo.Bar etc.
-  providing_scopes_query = '(using_directive (identifier) @target)',
+  providing_scopes_query = '([(using_directive (identifier) @target) (file_scoped_namespace_declaration (identifier) @target)])',
   -- @INCOMPLETE support other scopes
   -- @INCOMPLETE handle classic namespaces with brackets
   covering_scope_query = '(file_scoped_namespace_declaration (identifier) @target)',
