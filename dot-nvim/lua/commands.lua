@@ -78,37 +78,6 @@ local function grep_operator()
   vim.api.nvim_feedkeys('g@', 'n', false)
 end
 
-local decl = require('decl')
-
-local function go_to()
-  local results = decl.go_to()
-
-  if #results == 1 then
-    vim.cmd("e " .. vim.fn.fnameescape(results[1].filename))
-    vim.api.nvim_win_set_cursor(0, { tonumber(results[1].row), tonumber(results[1].col) })
-  elseif #results > 1 then
-    coroutine.wrap(function ()
-      local str_results = {}
-      for _, result in ipairs(results) do
-        str_results[#str_results + 1] = result.filename .. ":" .. result.row .. ":" .. result.col
-      end
-      local choices = fzf(str_results, "--ansi --expect=ctrl-v,ctrl-h " .. "--preview " .. preview_action)
-      if not choices then return end
-
-      local vimcmd
-      if choices[1] == "ctrl-v" then
-        vimcmd = "vnew"
-      elseif choices[1] == "ctrl-h" then
-        vimcmd = "new"
-      else
-        vimcmd = "e"
-      end
-      vim.cmd(vimcmd .. vim.fn.fnameescape(results[1].filename))
-      vim.api.nvim_win_set_cursor(0, { tonumber(results[1].row), tonumber(results[1].col) })
-    end)()
-  end
-end
-
 M.files = files
 M.grep = grep
 M.grep_operator = grep_operator
