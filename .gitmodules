@@ -25,3 +25,6 @@
 [submodule "plugins/copilot.vim"]
 	path = plugins/copilot.vim
 	url = https://github.com/github/copilot.vim
+[submodule "plugins/vim-commentary"]
+	path = plugins/vim-commentary
+	url = https://github.com/tpope/vim-commentary
