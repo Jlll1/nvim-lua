@@ -28,3 +28,6 @@
 [submodule "plugins/vim-commentary"]
 	path = plugins/vim-commentary
 	url = https://github.com/tpope/vim-commentary
+[submodule "plugins/decl"]
+	path = plugins/decl
+	url = https://github.com/Jlll1/decl
