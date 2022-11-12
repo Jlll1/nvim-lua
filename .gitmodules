@@ -31,3 +31,6 @@
 [submodule "plugins/decl"]
 	path = plugins/decl
 	url = https://github.com/Jlll1/decl
+[submodule "plugins/split.nvim"]
+	path = plugins/split.nvim
+	url = https://github.com/Jlll1/split.nvim
