@@ -52,3 +52,7 @@ keymap.set('n', 'gd', '<cmd>lua require("commands").go_to()<cr>', { noremap = tr
 keymap.set('n', 'gso', ':<c-u>SplitOn<space>', { noremap = true })
 keymap.set('n', 'gsb', ':<c-u>SplitBefore<space>', { noremap = true })
 keymap.set('n', 'gss', ':<c-u>SplitAfter<space>', { noremap = true })
+keymap.set('n', '<C-j>', '<C-w>j', { noremap = true })
+keymap.set('n', '<C-h>', '<C-w>h', { noremap = true })
+keymap.set('n', '<C-k>', '<C-w>k', { noremap = true })
+keymap.set('n', '<C-l>', '<C-w>l', { noremap = true })
