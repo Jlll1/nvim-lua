@@ -34,3 +34,6 @@
 [submodule "plugins/split.nvim"]
 	path = plugins/split.nvim
 	url = https://github.com/Jlll1/split.nvim
+[submodule "plugins/NeoZoom.lua"]
+	path = plugins/NeoZoom.lua
+	url = https://github.com/nyngwang/NeoZoom.lua
